@@ -18,6 +18,11 @@ class Snake {
         return $this->direction;
     }
 
+    public function getBody(): array
+    {
+        return $this->body;
+    }
+
     public function changeDirection(string $direction): void
     {
         if (Directions::isLegalMove($this->direction, $direction)) {
@@ -30,6 +35,15 @@ class Snake {
 
     public function move(bool $eat = false): void
     {
+        $nextPosition = $this->calculateNextMove();
+        //insert on body
+        array_push($this->body, $nextPosition);
+        //only keep first position if snake ate
+        if ($eat == false) array_shift($this->body);
+    }
+
+    public function calculateNextMove(): array
+    {
         //get head position
         $head = end($this->body);
         //figure out next position based on head position + direction
@@ -37,31 +51,34 @@ class Snake {
             $head[0] + SnakeParameters::DIRECTIONS[$this->direction][0],
             $head[1] + SnakeParameters::DIRECTIONS[$this->direction][1]
         ];
-        //insert on body
-        array_push($this->body, $nextPosition);
-        //only keep first position if snake ate
-        if ($eat == false) array_shift($this->body);
+
+        return $nextPosition;
+    }
+
+    public function hitObstacle(int $row, int $col): bool
+    {
+        return in_array([$row, $col], $this->body);
     }
 }
 
-$snek = new Snake(seed:[1,4], direction:Directions::DOWN);
-var_dump($snek);
-$snek->move();
-var_dump($snek);
-$snek->move();
-var_dump($snek);
-$snek->changeDirection(Directions::RIGHT);
-$snek->move();
-var_dump($snek);
-$snek->changeDirection(Directions::RIGHT);
-$snek->move();
-var_dump($snek);
-$snek->changeDirection(Directions::LEFT);
-$snek->move();
-var_dump($snek);
-$snek->changeDirection(Directions::UP);
-$snek->move(true);
-var_dump($snek);
-$snek->changeDirection(Directions::DOWN);
-$snek->move();
-var_dump($snek);
+// $snek = new Snake(seed:[1,4], direction:Directions::DOWN);
+// var_dump($snek);
+// $snek->move();
+// var_dump($snek);
+// $snek->move();
+// var_dump($snek);
+// $snek->changeDirection(Directions::RIGHT);
+// $snek->move();
+// var_dump($snek);
+// $snek->changeDirection(Directions::RIGHT);
+// $snek->move();
+// var_dump($snek);
+// $snek->changeDirection(Directions::LEFT);
+// $snek->move();
+// var_dump($snek);
+// $snek->changeDirection(Directions::UP);
+// $snek->move(true);
+// var_dump($snek);
+// $snek->changeDirection(Directions::DOWN);
+// $snek->move();
+// var_dump($snek);
