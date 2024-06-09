@@ -8,17 +8,21 @@ class Game {
     private int $length;
     private int $height;
     private bool $health = true;
+    private float $score = 0;
+    private $foodSetAt;
+
+    private const TIME_LIMIT = 20;
 
     public function __construct(int $height, int $length, array $snakeSeed = null, array $food = null)
     {
         $this->length = $length;
         $this->height = $height;
+        
+        if ($snakeSeed){ $this->snake = new Snake($snakeSeed);}
+        else{ $this->snake = new Snake();}
 
-        if ($snakeSeed) $this->snake = new Snake($snakeSeed);
-        else $this->snake = new Snake();
-
-        if ($food) $this->food = $food;
-        else $this->food = $this->generateFoodPosition();
+        if ($food){ $this->food = $food;}
+        else{ $this->generateFoodPosition();}
     }
 
     public function getFood(): array
@@ -36,6 +40,11 @@ class Game {
         return $this->health;
     }
 
+    public function getScore(): float
+    {
+        return $this->score;
+    }
+
     public function generateFoodPosition(): void
     {
         while(true) {
@@ -47,9 +56,10 @@ class Game {
                 && [$row, $col] != $this->food) break;
         }
         $this->food = [$row, $col];
+        $this->foodSetAt = microtime(true);
     }
 
-    public function makeMove(): bool
+    public function makeMove(): void
     {
         $next = $this->snake->calculateNextMove();
         if (
@@ -57,12 +67,13 @@ class Game {
             || ($this->snake->hitObstacle($next[0], $next[1]))
         ) {
             $this->health = false;
-            return false;
         }
         $eats = ([$next[0], $next[1]] == $this->food);
         $this->snake->move( $eats );
-        if ($eats) $this->generateFoodPosition();
-        return true;
+        if ($eats) {
+            $this->generateFoodPosition();
+            $this->addScore();
+        }
     }
 
     public function validateBoundaries(int $row, int $col)
@@ -70,36 +81,22 @@ class Game {
         return ($row >= 0 && $row < $this->height) &&
             ($col >= 0 && $col < $this->length);
     }
-}
 
-// $game = new Game(height:10, length:10, food:[7,8]);
-// var_dump($game);
-// var_dump($game->getSnake()->getBody());
-// echo PHP_EOL . ' ----------  ';
-// echo $game->makeMove() ? 'ye':'ne';
-// echo ' ----------  ' . PHP_EOL;
-// var_dump($game->getSnake()->getBody());
-// echo PHP_EOL . ' ----------  ';
-// echo $game->makeMove() ? 'ye':'ne';
-// echo ' ----------  ' . PHP_EOL;
-// var_dump($game->getSnake()->getBody());
-// echo PHP_EOL . ' ----------  ';
-// echo $game->makeMove() ? 'ye':'ne';
-// echo ' ----------  ' . PHP_EOL;
-// var_dump($game->getSnake()->getBody());
-// $game->getSnake()->changeDirection(Directions::DOWN);
-// echo PHP_EOL . ' ----------  ';
-// echo $game->makeMove() ? 'ye':'ne';
-// echo ' ----------  ' . PHP_EOL;
-// var_dump($game->getSnake()->getBody());
-// echo PHP_EOL . ' ----------  ';
-// echo $game->makeMove() ? 'ye':'ne';
-// echo ' ----------  ' . PHP_EOL;
-// var_dump($game->getSnake()->getBody());
-// var_dump($game->getFood());
-// $game->getSnake()->changeDirection(Directions::RIGHT);
-// echo PHP_EOL . ' ----------  ';
-// echo $game->makeMove() ? 'ye':'ne';
-// echo ' ----------  ' . PHP_EOL;
-// var_dump($game->getSnake()->getBody());
-// var_dump($game->getFood());
+    public function addScore()
+    {
+        // echo $this->foodSetAt . PHP_EOL;
+        // $timeDifference = microtime(true) - $this->foodSetAt;
+        // $timeDifference = number_format($timeDifference, 2);
+        // die($timeDifference);
+        $timeDifference = 10;
+        if ($timeDifference > 20) {
+            $score = 0;
+        } else {
+            // Calculate points based on how close the time taken is to 0 seconds
+            $points = (20 - $timeDifference) / 20 * 100;
+            $score = round($points);
+        }
+        
+        $this->score = $this->score + $score; 
+    }
+}

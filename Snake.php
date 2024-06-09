@@ -27,9 +27,6 @@ class Snake {
     {
         if (Directions::isLegalMove($this->direction, $direction)) {
             $this->direction = $direction;
-            echo PHP_EOL . '---------  changed to '.$this->direction.' ---------' . PHP_EOL . PHP_EOL;
-        }else{
-            echo PHP_EOL . '---------  still '.$this->direction.' ---------' . PHP_EOL . PHP_EOL;
         }
     }
 
@@ -60,25 +57,3 @@ class Snake {
         return in_array([$row, $col], $this->body);
     }
 }
-
-// $snek = new Snake(seed:[1,4], direction:Directions::DOWN);
-// var_dump($snek);
-// $snek->move();
-// var_dump($snek);
-// $snek->move();
-// var_dump($snek);
-// $snek->changeDirection(Directions::RIGHT);
-// $snek->move();
-// var_dump($snek);
-// $snek->changeDirection(Directions::RIGHT);
-// $snek->move();
-// var_dump($snek);
-// $snek->changeDirection(Directions::LEFT);
-// $snek->move();
-// var_dump($snek);
-// $snek->changeDirection(Directions::UP);
-// $snek->move(true);
-// var_dump($snek);
-// $snek->changeDirection(Directions::DOWN);
-// $snek->move();
-// var_dump($snek);
