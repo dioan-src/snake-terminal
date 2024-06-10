@@ -71,8 +71,8 @@ class Game {
         $eats = ([$next[0], $next[1]] == $this->food);
         $this->snake->move( $eats );
         if ($eats) {
-            $this->generateFoodPosition();
             $this->addScore();
+            $this->generateFoodPosition();
         }
     }
 
@@ -84,19 +84,14 @@ class Game {
 
     public function addScore()
     {
-        // echo $this->foodSetAt . PHP_EOL;
-        // $timeDifference = microtime(true) - $this->foodSetAt;
-        // $timeDifference = number_format($timeDifference, 2);
-        // die($timeDifference);
-        $timeDifference = 10;
-        if ($timeDifference > 20) {
-            $score = 0;
-        } else {
-            // Calculate points based on how close the time taken is to 0 seconds
-            $points = (20 - $timeDifference) / 20 * 100;
-            $score = round($points);
-        }
+        $diff = microtime(true) - $this->foodSetAt;
+        $timeInSeconds = number_format($diff, 2);
         
-        $this->score = $this->score + $score; 
+        $a = 499;
+        $b = 0.2;
+        $c = 1;
+        
+        $points = number_format($a * exp(-$b * $timeInSeconds) + $c, 2);
+        $this->score += $points;
     }
 }
