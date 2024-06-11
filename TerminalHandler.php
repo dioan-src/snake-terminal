@@ -1,5 +1,12 @@
 <?php
 require_once __DIR__ . '/Game.php';
+require_once __DIR__ . '/Directions.php';
+const HEAD_ICON = [
+    Directions::UP => '^',
+    Directions::DOWN => 'v',
+    Directions::LEFT => '<',
+    Directions::RIGHT => '>',
+];
 
 class TerminalHandler {
     public static function OutputBoard(Game $game): void{
@@ -7,10 +14,11 @@ class TerminalHandler {
         self::hideCursor();
         $body = $game->getSnake()->getBody();
         $food = $game->getFood();
-        foreach($body as $part){
-            self::moveCursorAndDisplayText($part[0], $part[1], 'o');
+        foreach($body as $key => $part){
+            if(isset($body[$key+1])){ self::moveCursorAndDisplayText($part[0], $part[1], 'o'); }
+            else{self::moveCursorAndDisplayText($part[0], $part[1], HEAD_ICON[$game->getSnake()->getDirection()]);}
         }
-        self::moveCursorAndDisplayText($food[0], $food[1], '*');
+        self::moveCursorAndDisplayText($food[0], $food[1], 'x');
     }
 
     // Clear the screen
