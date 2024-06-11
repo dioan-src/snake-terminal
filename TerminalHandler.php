@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/Game.php';
 require_once __DIR__ . '/Directions.php';
+require_once __DIR__ . '/TerminalScreens.php';
+
 const HEAD_ICON = [
     Directions::UP => '^',
     Directions::DOWN => 'v',
@@ -70,5 +72,27 @@ class TerminalHandler {
         self::showTerminalInput();
     }
 
+    public static function showGameOverScreen(): void
+    {
+        self::hideCursor();
+        // Convert the multiline string to an array of lines
+        $lines = explode("\n", TerminalScreens::GAME_OVER_SCREEN);
 
+        // Number of lines to initially show
+        $visibleLines = 13;
+        $totalLines = count($lines);
+        
+        for ($i = 0; $i < $totalLines - $visibleLines; $i++) {
+            self::clearScreen();
+            $cnt = 1;
+            for ($j = $i; $j < $i + $visibleLines; $j++) {
+                if (isset($lines[$j])) {
+                    self::moveCursorAndDisplayText($cnt,1, $lines[$j]);
+                }
+                $cnt++;
+            }
+            usleep(200000);
+        }
+        usleep(200000);
+    }
 }

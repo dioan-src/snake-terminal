@@ -31,5 +31,6 @@ while (1) {
     usleep(SLEEPYTIME);
 }
 
+TerminalHandler::showGameOverScreen();
 TerminalHandler::resetTerminalSettings();
 TerminalHandler::moveCursorAndDisplayText(1, 1, 'Score : ' . $game->getScore());
